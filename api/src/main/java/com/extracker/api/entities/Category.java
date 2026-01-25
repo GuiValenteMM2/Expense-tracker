@@ -26,6 +26,11 @@ public class Category {
         setImportance(importance);
     }
 
+    public void addExpense(Expense expense) {
+        this.expenses.add(expense);
+        expense.setCategory(this);
+    }
+
     @Override
     public String toString() {
         return "Category: ".concat(getName()).concat(getImportance());

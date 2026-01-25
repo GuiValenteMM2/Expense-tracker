@@ -2,7 +2,12 @@ package com.extracker.api.service;
 
 import com.extracker.api.entities.Category;
 import com.extracker.api.entities.Expense;
+import com.extracker.api.exceptions.ExistsAlreadyException;
+import com.extracker.api.repository.CategoryRepository;
 import com.extracker.api.repository.ExpenseRepository;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.rmi.NoSuchObjectException;
@@ -44,17 +49,22 @@ public class ExpenseService {
         return changingExp;
     }
 
-    public List<Expense> listByCategory(String ctgName) throws NoSuchObjectException {
-        List<Expense> expensesByCtg = this.findAll()
-                .stream()
-                .filter(exp -> exp.getCategory()
-                        .getName()
-                        .equals(ctgName))
-                        .toList();
-        if ((long) expensesByCtg.size() > 0) {
-            return expensesByCtg;
-        } else {
-            throw new NoSuchObjectException("Can't find expenses from the provided category");
+    public List<Expense> listByCategory(String ctgName) throws EntityNotFoundException {
+        try {
+            String newName = ctgName.toLowerCase();
+            return this.expenseRepository.findByCategoryName(newName);
+        } catch (Exception e) {
+            throw new EntityNotFoundException(e);
+        }
+    }
+
+    public void setCategory(Category category, long expenseId) throws EntityNotFoundException {
+        try {
+            Expense expense = this.expenseRepository.findById(expenseId);
+            expense.setCategory(category);
+            this.expenseRepository.save(expense);
+        } catch (Exception e) {
+            throw new EntityNotFoundException(e);
         }
     }
 }

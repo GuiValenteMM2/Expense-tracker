@@ -20,7 +20,7 @@ public class CategoryService {
     public Category createNewCategory(Category newCategory) {
         boolean ctgExists = this.listAll().stream().map(cat -> cat.getName().equals(newCategory.getName())).findAny().isPresent();
         if (ctgExists) {
-            throw new ExistsAlreadyException("Error, this item already exists.");
+            return this.findById(newCategory.getId());
         }
         this.categoryRepository.save(newCategory);
         return newCategory;
