@@ -1,5 +1,6 @@
 package com.extracker.api.controller;
 
+import com.extracker.api.entities.Category;
 import com.extracker.api.entities.Expense;
 import com.extracker.api.service.ExpenseService;
 import org.springframework.stereotype.Controller;
@@ -19,8 +20,13 @@ public class ExpenseController {
     }
 
     @GetMapping("/expenses")
-    List<Expense> listExpenses() {
+    List<Expense> getAllExpenses() {
         return this.expenseService.findAll();
+    }
+
+    @GetMapping("/expenses/{category}")
+    List<Expense> getByCategory(String categoryName) {
+        return this.expenseService.listByCategory(categoryName);
     }
 
     @GetMapping("/expenses/{id}")
@@ -29,8 +35,8 @@ public class ExpenseController {
     }
 
     @PostMapping("/expenses")
-    void postExpense(@RequestParam Expense expense) {
-        this.expenseService.createNewExpense(expense);
+    void postExpense(@RequestParam Expense expense, @RequestParam Category category) {
+        this.expenseService.createNewExpense(expense, category);
     }
 
     @PutMapping("/expenses/{id}")

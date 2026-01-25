@@ -17,14 +17,18 @@ import java.util.List;
 public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
+    private final CategoryService categoryService;
 
-    public ExpenseService(ExpenseRepository repository) {
+    public ExpenseService(ExpenseRepository repository, CategoryService categoryService) {
         this.expenseRepository = repository;
+        this.categoryService = categoryService;
     }
 
-    public Expense createNewExpense(Expense newExpense) {
+    public void createNewExpense(Expense newExpense, Category category) {
+        Category categoryInUse = this.categoryService.createNewCategory(category);
+        categoryInUse.addExpense(newExpense);
+        newExpense.setCategory(categoryInUse);
         this.expenseRepository.save(newExpense);
-        return newExpense;
     }
 
     public Expense findExpenseById(long expenseId) {
