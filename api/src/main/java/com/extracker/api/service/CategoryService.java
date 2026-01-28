@@ -30,6 +30,10 @@ public class CategoryService {
         return this.categoryRepository.findById(id);
     }
 
+    public Category findByName(String name) {
+        return this.categoryRepository.findByName(name);
+    }
+
     public List<Category> listAll() {
         return this.categoryRepository.findAll();
     }
@@ -39,12 +43,11 @@ public class CategoryService {
         this.categoryRepository.delete(remCategory);
     }
 
-    public Category updateCategory(long id, Category newCategory) {
+    public void updateCategory(long id, Category newCategory) {
         Category updCategory = this.findById(id);
         updCategory.setName(newCategory.getName());
         updCategory.setExpenses(newCategory.getExpenses());
         updCategory.setImportance(newCategory.getImportance());
         this.categoryRepository.save(updCategory);
-        return updCategory;
     }
 }

@@ -8,6 +8,7 @@ import com.extracker.api.repository.ExpenseRepository;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.rmi.NoSuchObjectException;
@@ -16,18 +17,20 @@ import java.util.List;
 @Service
 public class ExpenseService {
 
+    @Autowired
     private final ExpenseRepository expenseRepository;
     private final CategoryService categoryService;
 
-    public ExpenseService(ExpenseRepository repository, CategoryService categoryService) {
-        this.expenseRepository = repository;
+    @Autowired
+    public ExpenseService(ExpenseRepository expenseRepository, CategoryService categoryService) {
+        this.expenseRepository = expenseRepository;
         this.categoryService = categoryService;
     }
 
     public void createNewExpense(Expense newExpense, Category category) {
         Category categoryInUse = this.categoryService.createNewCategory(category);
         categoryInUse.addExpense(newExpense);
-        newExpense.setCategory(categoryInUse);
+        this.setCategory(categoryInUse, newExpense.getId());
         this.expenseRepository.save(newExpense);
     }
 
@@ -43,20 +46,18 @@ public class ExpenseService {
         this.expenseRepository.deleteById(expenseId);
     }
 
-    public Expense updateExpense(long expenseId, Expense newExpense) {
+    public void updateExpense(long expenseId, Expense newExpense) {
         Expense changingExp = this.findExpenseById(expenseId);
         changingExp.setName(newExpense.getName());
         changingExp.setValue(newExpense.getValue());
         changingExp.setCategory(newExpense.getCategory());
         changingExp.setCreatedAt(newExpense.getCreatedAt());
         this.expenseRepository.save(changingExp);
-        return changingExp;
     }
 
-    public List<Expense> listByCategory(String ctgName) throws EntityNotFoundException {
+    public List<Expense> listByCategory(long ctgId) throws EntityNotFoundException {
         try {
-            String newName = ctgName.toLowerCase();
-            return this.expenseRepository.findByCategoryName(newName);
+            return this.expenseRepository.findByCategory(ctgId);
         } catch (Exception e) {
             throw new EntityNotFoundException(e);
         }

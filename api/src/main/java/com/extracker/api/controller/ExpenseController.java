@@ -2,6 +2,7 @@ package com.extracker.api.controller;
 
 import com.extracker.api.entities.Category;
 import com.extracker.api.entities.Expense;
+import com.extracker.api.service.CategoryService;
 import com.extracker.api.service.ExpenseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +13,13 @@ import java.util.List;
 public class ExpenseController {
 
     private ExpenseService expenseService;
+    private CategoryService categoryService;
 
     protected ExpenseController() {}
 
-    public ExpenseController(ExpenseService expenseService) {
+    public ExpenseController(ExpenseService expenseService, CategoryService categoryService) {
         this.expenseService = expenseService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/expenses")
@@ -26,7 +29,8 @@ public class ExpenseController {
 
     @GetMapping("/expenses/{category}")
     List<Expense> getByCategory(String categoryName) {
-        return this.expenseService.listByCategory(categoryName);
+        long categoryId = this.categoryService.findByName(categoryName).getId();
+        return this.expenseService.listByCategory(categoryId);
     }
 
     @GetMapping("/expenses/{id}")
