@@ -16,9 +16,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "SELECT * FROM expense WHERE category_id = :categoryId")
+    @Query(value = "SELECT e FROM Expense e WHERE e.category.id = :categoryId")
     List<Expense> findByCategory(@Param("categoryId") long categoryId);
     Expense findById(long Id);
-    @Query(value = "SELECT * FROM expense WHERE createdAt > :dtStart AND createdAt < :dtEnd ORDER BY createdAt")
+    @Query(value = "SELECT e FROM Expense e WHERE e.createdAt > :dtStart AND e.createdAt < :dtEnd ORDER BY createdAt")
     List<Expense> listByDate(Date dtStart, Date dtEnd);
 }

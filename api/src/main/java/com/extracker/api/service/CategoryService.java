@@ -3,6 +3,7 @@ package com.extracker.api.service;
 import com.extracker.api.entities.Category;
 import com.extracker.api.exceptions.ExistsAlreadyException;
 import com.extracker.api.repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.List;
 @Service
 public class CategoryService {
 
+    @Autowired
     private final CategoryRepository categoryRepository;
 
     public CategoryService(CategoryRepository repository) {
@@ -22,8 +24,7 @@ public class CategoryService {
         if (ctgExists) {
             return this.findById(newCategory.getId());
         }
-        this.categoryRepository.save(newCategory);
-        return newCategory;
+        return this.categoryRepository.save(newCategory);
     }
 
     public Category findById(long id) {
@@ -38,16 +39,19 @@ public class CategoryService {
         return this.categoryRepository.findAll();
     }
 
-    public void removeCategory(long id) {
+    public Category removeCategory(long id) {
         Category remCategory = this.findById(id);
         this.categoryRepository.delete(remCategory);
+        return remCategory;
     }
 
-    public void updateCategory(long id, Category newCategory) {
+    public Category updateCategory(long id, Category newCategory) {
         Category updCategory = this.findById(id);
         updCategory.setName(newCategory.getName());
         updCategory.setExpenses(newCategory.getExpenses());
         updCategory.setImportance(newCategory.getImportance());
         this.categoryRepository.save(updCategory);
+
+        return updCategory;
     }
 }
