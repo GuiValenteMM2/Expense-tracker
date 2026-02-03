@@ -2,16 +2,11 @@ package com.extracker.api.service;
 
 import com.extracker.api.entities.Category;
 import com.extracker.api.entities.Expense;
-import com.extracker.api.exceptions.ExistsAlreadyException;
-import com.extracker.api.repository.CategoryRepository;
 import com.extracker.api.repository.ExpenseRepository;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.rmi.NoSuchObjectException;
 import java.util.List;
 
 @Service
