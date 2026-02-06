@@ -3,7 +3,6 @@ package com.extracker.api.controller;
 import com.extracker.api.entities.Category;
 import com.extracker.api.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,25 +26,26 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getAllCategories() throws ResponseStatusException {
-        try {
-            List<Category> categories = this.categoryService.listAll();
+        List<Category> categories = this.categoryService.listAll();
+        if (categories.size() > 0) {
             return ResponseEntity.ok(categories);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find any categories", e);
+        } else {
+            return ResponseEntity.notFound().build();
         }
+
     }
 
-    @GetMapping("/categories/{id}")
-    public ResponseEntity<Category> getCategory(@PathVariable long id) throws ResponseStatusException {
-        try {
+    @GetMapping("/categories/id/{id}")
+    public ResponseEntity<Category> getCategory(@PathVariable long id) throws EntityNotFoundException {
             Category category = this.categoryService.findById(id);
-            return ResponseEntity.ok(category);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find any categories", e);
-        }
+            if (category != null) {
+                return ResponseEntity.ok(category);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
     }
 
-    @GetMapping("/categories/{name}")
+    @GetMapping("/categories/name/{name}")
     public ResponseEntity<Category> getCategoryByName(@PathVariable String name) throws ResponseStatusException {
         try {
             Category category = this.categoryService.findByName(name);
@@ -65,7 +65,7 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/categories/{id}")
+    @PutMapping("/categories/upd/{id}")
     public ResponseEntity<Category> putCategory(@PathVariable long id, @RequestBody Category category) {
         try {
             Category updtCategory = this.categoryService.updateCategory(id, category);
@@ -75,11 +75,11 @@ public class CategoryController {
         }
     }
 
-    @DeleteMapping("/categories/{id}")
+    @DeleteMapping("/categories/del/{id}")
     public ResponseEntity<Category> deleteCategory(@PathVariable long id) {
         try {
-            Category remCategory = this.categoryService.removeCategory(id);
-            return ResponseEntity.ok(remCategory);
+            this.categoryService.removeCategory(id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find any categories", e);
         }

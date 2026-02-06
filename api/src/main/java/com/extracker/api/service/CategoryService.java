@@ -41,11 +41,7 @@ public class CategoryService {
     }
 
     public Category findById(long id) throws EntityNotFoundException {
-        try {
-            return this.categoryRepository.findById(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Entity was not found");
-        }
+        return this.categoryRepository.findById(id);
     }
 
     public Category findByName(String name) throws EntityNotFoundException{
