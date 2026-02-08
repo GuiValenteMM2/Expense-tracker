@@ -5,6 +5,7 @@ import com.extracker.api.entities.Expense;
 import com.extracker.api.service.CategoryService;
 import com.extracker.api.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,14 @@ public class ExpenseController {
     }
 
     @GetMapping("/expenses")
-    List<Expense> getAllExpenses() {
-        return this.expenseService.findAll();
+    ResponseEntity<List<Expense>> getAllExpenses() {
+        List<Expense> expenses = this.expenseService.findAll();
+        if (!expenses.isEmpty()) {
+            return ResponseEntity.ok(expenses);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @GetMapping("/expenses/{category}")
@@ -37,9 +44,9 @@ public class ExpenseController {
         return this.expenseService.findExpenseById(id);
     }
 
-    @PostMapping("/expenses")
-    void postExpense(@RequestParam Expense expense, @RequestParam Category category) {
-        this.expenseService.createNewExpense(expense, category);
+    @PostMapping("/expenses/new/{category_id}")
+    void postExpense(@RequestParam Expense expense, @PathVariable long categoryId) {
+        this.expenseService.createNewExpense(expense, categoryId);
     }
 
     @PutMapping("/expenses/{id}")

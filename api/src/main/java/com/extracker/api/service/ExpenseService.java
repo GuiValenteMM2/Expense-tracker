@@ -22,10 +22,8 @@ public class ExpenseService {
         this.categoryService = categoryService;
     }
 
-    public void createNewExpense(Expense newExpense, Category category) {
-        Category categoryInUse = this.categoryService.createNewCategory(category);
-        categoryInUse.addExpense(newExpense);
-        this.setCategory(categoryInUse, newExpense.getId());
+    public void createNewExpense(Expense newExpense, long categoryId) {
+        this.setCategory(newExpense, categoryId);
         this.expenseRepository.save(newExpense);
     }
 
@@ -58,11 +56,10 @@ public class ExpenseService {
         }
     }
 
-    public void setCategory(Category category, long expenseId) throws EntityNotFoundException {
+    public void setCategory(Expense expense, long categoryId) throws EntityNotFoundException {
         try {
-            Expense expense = this.expenseRepository.findById(expenseId);
+            Category category = this.categoryService.findById(categoryId);
             expense.setCategory(category);
-            this.expenseRepository.save(expense);
         } catch (Exception e) {
             throw new EntityNotFoundException(e);
         }
