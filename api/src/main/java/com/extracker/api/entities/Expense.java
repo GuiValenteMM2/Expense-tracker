@@ -3,6 +3,7 @@ package com.extracker.api.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
@@ -20,6 +21,8 @@ public class Expense {
     @JoinColumn(name="category_id", nullable=false)
     private Category category;
     private double value;
+    @CreatedDate
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Date createdAt;
 
     protected Expense() {}

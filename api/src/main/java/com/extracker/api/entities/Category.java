@@ -3,7 +3,9 @@ package com.extracker.api.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -19,6 +21,8 @@ public class Category {
     private String importance;
     @OneToMany(mappedBy = "category")
     private List<Expense> expenses;
+    @CreatedDate
+    private Date createdAt;
 
     protected Category() {}
 
